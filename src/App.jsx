@@ -3,8 +3,25 @@ import { useState } from 'react';
 export default function App() {
   const [result, setResult] = useState('');
 
-  const handleClick = () => {
-    setResult(`Button clicked at ${new Date().toISOString()}`);
+  const handleClick = async () => {
+    try {
+      console.log("Calling:", import.meta.env.VITE_API_URL + "/health");
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/health`
+      );
+
+      console.log("Response status:", response.status);
+
+      const data = await response.json();
+
+      console.log("Response body:", data);
+
+      setResult(JSON.stringify(data));
+    } catch (err) {
+      console.error("Network error:", err);
+      setResult("ERROR: " + err.message);
+    }
   };
 
   return (
